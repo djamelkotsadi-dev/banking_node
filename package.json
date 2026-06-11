@@ -5,7 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node --watch src/index.js"
+    "dev": "node --watch src/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -17,5 +19,13 @@
     "uuid": "^10.0.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "axios": "^1.6.0",
+    "vitest": "^1.0.0"
+  },
+  "vitest": {
+    "testTimeout": 30000,
+    "hookTimeout": 30000
   }
 }
