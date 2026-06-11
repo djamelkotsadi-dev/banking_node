@@ -12,7 +12,12 @@ const app  = express();
 const PORT = process.env.PORT || 8080;
 
 // ─── Middlewares globaux ────────────────────────────────────────────────────
-app.use(cors());
+// ✅ APRÈS
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 
 // ─── Swagger UI ────────────────────────────────────────────────────────────
