@@ -8,7 +8,8 @@ router.use(authMiddleware);
 
 // ─── Règles métier ─────────────────────────────────────────────────────────
 const DEPOT_MIN   = 1_000;
-const RETRAIT_MIN = 1_000_000;
+const RETRAIT_MIN = 500;
+const RETRAIT_MAX = 1_000_000;
 const TAUX_FRAIS  = 0.01;   // 1%
 const FRAIS_MIN   = 500;    // 500 FCFA minimum
 
@@ -36,6 +37,9 @@ router.post("/", async (req, res) => {
 
     if (typeTransaction === "RETRAIT" && montantNum < RETRAIT_MIN)
       return fail(res, `Le montant minimum pour un retrait est de ${RETRAIT_MIN.toLocaleString("fr-FR")} FCFA.`);
+
+    if (typeTransaction === "RETRAIT" && montantNum > RETRAIT_MAX)
+      return fail(res, `Le montant maximum pour un retrait est de ${RETRAIT_MAX.toLocaleString("fr-FR")} FCFA.`);
 
     await client.query("BEGIN");
 
