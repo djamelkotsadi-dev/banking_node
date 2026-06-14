@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { initDB } from "./db/index.js";
+import { initDB, pool } from "./db/index.js";
 import authRoutes         from "./routes/auth.js";
 import utilisateursRoutes from "./routes/utilisateurs.js";
 import comptesRoutes      from "./routes/comptes.js";
@@ -12,12 +12,7 @@ const app  = express();
 const PORT = process.env.PORT || 8080;
 
 // ─── Middlewares globaux ────────────────────────────────────────────────────
-// ✅ APRÈS
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+app.use(cors());
 app.use(express.json());
 
 // ─── Swagger UI ────────────────────────────────────────────────────────────
@@ -37,9 +32,10 @@ app.use("/api/transactions", transactionsRoutes);
 app.get("/", (_, res) => res.json({ status: "OK", message: "Banking API Node.js", docs: "/api-docs" }));
 
 // ─── Démarrage ─────────────────────────────────────────────────────────────
+let server;
 async function start() {
   await initDB();
-  app.listen(PORT, () => {
+  server = app.listen(PORT, () => {
     console.log(`🚀 Serveur démarré sur le port ${PORT}`);
     console.log(`📖 Swagger UI : http://localhost:${PORT}/api-docs`);
   });
@@ -48,4 +44,19 @@ async function start() {
 start().catch(err => {
   console.error("Erreur démarrage :", err);
   process.exit(1);
+});
+
+// ─── Arrêt propre (Ctrl+C, Render redeploy, etc.) ──────────────────────────
+process.on("SIGINT", async () => {
+  console.log("\nSIGINT reçu, fermeture propre…");
+  try { await pool.end(); } catch {}
+  if (server) server.close(() => process.exit(0));
+  else process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  console.log("\nSIGTERM reçu, fermeture propre…");
+  try { await pool.end(); } catch {}
+  if (server) server.close(() => process.exit(0));
+  else process.exit(0);
 });
