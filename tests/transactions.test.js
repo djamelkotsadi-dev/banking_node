@@ -255,7 +255,7 @@ describe("TRANSFERT", () => {
   // ── Banques différentes (avec frais) ─────────────────────────────────
   describe("Banques différentes (ECOBANK → UBA) — avec frais 1%", () => {
 
-    it("Transfert de 10 000 FCFA → frais = 100 FCFA (1%)", async () => {
+    it("Transfert de 10 000 FCFA → frais = 500 FCFA (1%)", async () => {
       await deposer(tokenA, compteA_ecobank, 5000000);
 
       const res = await api.post(
@@ -265,8 +265,8 @@ describe("TRANSFERT", () => {
       );
       expect(res.status).toBe(201);
       const emis = res.data.data[0];
-      expect(Number(emis.frais)).toBe(100);
-      expect(Number(emis.montantTotal)).toBe(10100);
+      expect(Number(emis.frais)).toBe(500);
+      expect(Number(emis.montantTotal)).toBe(10500);
     });
 
     it("Transfert de 1 000 FCFA → frais minimum 500 FCFA", async () => {

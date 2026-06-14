@@ -12,7 +12,7 @@ beforeAll(async () => {
   userId = session.userId;
 });
 
-describe("🏦 COMPTES", () => {
+describe("COMPTES", () => {
 
   // ── CREATE ────────────────────────────────────────────────────────────
   describe("POST /comptes", () => {
